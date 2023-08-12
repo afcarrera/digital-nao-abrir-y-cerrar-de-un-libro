@@ -4,7 +4,7 @@ import { AppService } from './app.service';
 import { BooksModule } from './books/book.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { configService } from './config/config.service';
-import { AuthModule } from './utilities/auth.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
