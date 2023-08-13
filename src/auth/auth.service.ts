@@ -61,9 +61,11 @@ export class AuthService {
       ...user,
       password: await generateHash(password),
     };
-
-    const newUser = await this.authRepository.save(userParse);
-
-    return newUser;
+    try{
+      const newUser = await this.authRepository.save(userParse);
+      return newUser;
+    }catch(error){
+      throw new HttpException(error.sqlMessage, HttpStatus.CONFLICT);
+    }
   }
 }

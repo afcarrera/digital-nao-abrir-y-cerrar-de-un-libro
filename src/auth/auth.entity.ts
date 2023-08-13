@@ -8,11 +8,11 @@ export class Auth {
   id: number;
 
   @ApiProperty({ example: 'acarrera' })
-  @Column()
+  @Column({ unique: true })
   name: string;
 
   @ApiProperty({ example: 'acarrera@mail.com' })
-  @Column()
+  @Column({ unique: true })
   email: string;
 
   @ApiProperty({
