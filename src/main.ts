@@ -6,19 +6,19 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.setGlobalPrefix('bookstore/api/v1');
 
-  const options = new DocumentBuilder() 
+  const options = new DocumentBuilder()
     .setTitle('Bookstore REST API')
     .setDescription('API REST de Bookstore')
     .setVersion('1.0')
-    .addBearerAuth( 
+    .addBearerAuth(
       { type: 'http', scheme: 'bearer', bearerFormat: 'JWT', in: 'header' },
-      'access-token', 
+      'access-token',
     )
     .build();
-  const document = SwaggerModule.createDocument(app, options); 
+  const document = SwaggerModule.createDocument(app, options);
 
   // La ruta en que se sirve la documentación
-  SwaggerModule.setup('docs', app, document); 
+  SwaggerModule.setup('docs', app, document);
   await app.listen(3000);
 }
 bootstrap();

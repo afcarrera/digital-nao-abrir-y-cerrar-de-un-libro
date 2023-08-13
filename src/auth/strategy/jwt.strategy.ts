@@ -8,7 +8,7 @@ import { Repository } from 'typeorm';
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(
-    @InjectRepository(Auth) private authRepository: Repository<Auth>, 
+    @InjectRepository(Auth) private authRepository: Repository<Auth>,
   ) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -18,7 +18,9 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: { id: number }) {
-    const user = await this.authRepository.findOne({where: {id: payload.id}});
+    const user = await this.authRepository.findOne({
+      where: { id: payload.id },
+    });
     return user;
   }
 }

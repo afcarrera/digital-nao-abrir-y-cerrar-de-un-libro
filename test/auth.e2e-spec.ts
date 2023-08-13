@@ -1,17 +1,18 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { AuthService } from './auth.service';
-import { TypeOrmModule, getRepositoryToken } from '@nestjs/typeorm';
-import { Auth } from './auth.entity';
-import { configService } from '../config/config.service';
-import { JwtService } from '@nestjs/jwt';
-import { JwtHandle } from './utils/jwt-handle';
+import { INestApplication } from '@nestjs/common';
+import * as request from 'supertest';
 import { ModuleMocker, MockFunctionMetadata } from 'jest-mock';
-import * as bcrypt from 'bcryptjs';
+import { TypeOrmModule, getRepositoryToken } from '@nestjs/typeorm';
+import { configService } from './../src/config/config.service';
 import { Repository } from 'typeorm';
-import { HttpException } from '@nestjs/common';
+import { AuthModule } from './../src/auth/auth.module';
+import { Auth } from './../src/auth/auth.entity';
+import { AuthService } from './../src/auth/auth.service';
+import { JwtService } from '@nestjs/jwt';
+import { JwtHandle } from './../src/auth/utils/jwt-handle';
+import * as bcrypt from 'bcryptjs';
 
 const moduleMocker = new ModuleMocker(global);
-
 const registerResult = {
   name: 'acarrera',
   email: 'acarrera@mail.com',
@@ -28,6 +29,7 @@ const loginResult = {
     email: 'acarrera@mail.com',
   },
 };
+
 const registerReq = {
   name: 'acarrera',
   email: 'acarrera@mail.com',
@@ -42,20 +44,27 @@ const loginReq = {
 const token =
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNjkxODI2MTQ3LCJleHAiOjE2OTE4NDA1NDd9.6-B9KSeKG9fayD-ISutZGH2Zq3baa6dY48ZlbRwnE4A';
 
-describe('AuthService', () => {
-  let service: AuthService;
+describe('AuthController (e2e)', () => {
+  let app: INestApplication;
   let repository: Repository<Auth>;
   let jwtService: JwtService;
 
   beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
+    const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [
+        AuthModule,
         TypeOrmModule.forRoot(configService.getTypeOrmConfig()),
         TypeOrmModule.forFeature([Auth]),
       ],
-      providers: [AuthService, JwtService, JwtHandle],
+      providers: [JwtService, JwtHandle],
     })
       .useMocker((token) => {
+        if (token === AuthService) {
+          return {
+            register: jest.fn().mockResolvedValue(registerResult),
+            login: jest.fn().mockResolvedValue(loginResult),
+          };
+        }
         if (token === bcrypt) {
           return {
             hash: jest
@@ -76,44 +85,32 @@ describe('AuthService', () => {
       })
       .compile();
 
-    service = module.get<AuthService>(AuthService);
-    repository = module.get<Repository<Auth>>(getRepositoryToken(Auth));
-    jwtService = module.get<JwtService>(JwtService);
+    app = moduleFixture.createNestApplication();
+    repository = moduleFixture.get<Repository<Auth>>(getRepositoryToken(Auth));
+    jwtService = moduleFixture.get<JwtService>(JwtService);
+    await app.init();
   });
 
-  it('should be defined', () => {
-    expect(service).toBeDefined();
+  it('/auth/login (POST)', async () => {
+    jest
+      .spyOn(repository, 'findOne')
+      .mockImplementation(() => Promise.resolve(registerResult));
+    jest.spyOn(jwtService, 'sign').mockImplementation(() => token);
+    return request(app.getHttpServer())
+      .post('/auth/login')
+      .send(loginReq)
+      .expect(201)
+      .expect(loginResult);
   });
 
-  describe('login', () => {
-    it('should return a registered user and a token', async () => {
-      jest
-        .spyOn(repository, 'findOne')
-        .mockImplementation(() => Promise.resolve(registerResult));
-      jest.spyOn(jwtService, 'sign').mockImplementation(() => token);
-      expect(await service.login(loginReq)).toStrictEqual(loginResult);
-    });
-  });
-
-  describe('loginNotFound', () => {
-    it('should return HttpException', async () => {
-      jest
-        .spyOn(repository, 'findOne')
-        .mockImplementation(() => Promise.resolve(undefined));
-      try {
-        await service.login(loginReq);
-      } catch (error) {
-        expect(error).toBeInstanceOf(HttpException);
-      }
-    });
-  });
-
-  describe('register', () => {
-    it('should return a registered user', async () => {
-      jest
-        .spyOn(repository, 'save')
-        .mockImplementation(() => Promise.resolve(registerResult));
-      expect(await service.register(registerReq)).toBe(registerResult);
-    });
+  it('/auth/register (POST)', async () => {
+    jest
+      .spyOn(repository, 'save')
+      .mockImplementation(() => Promise.resolve(registerResult));
+    return request(app.getHttpServer())
+      .post('/auth/register')
+      .send(registerReq)
+      .expect(201)
+      .expect(registerResult);
   });
 });

@@ -8,11 +8,9 @@ import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
-    BooksModule, 
-    TypeOrmModule.forRoot( 
-      configService.getTypeOrmConfig(),
-    ),
-    AuthModule
+    BooksModule,
+    TypeOrmModule.forRoot(configService.getTypeOrmConfig()),
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

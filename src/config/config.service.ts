@@ -1,6 +1,7 @@
-import { TypeOrmModuleOptions } from '@nestjs/typeorm'; 
+import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 
-require('dotenv').config();
+import dotenv = require('dotenv');
+dotenv.config();
 
 class ConfigService {
   constructor(private env: { [k: string]: string | undefined }) {}
@@ -15,22 +16,22 @@ class ConfigService {
   }
 
   public ensureValues(keys: string[]) {
-    keys.forEach(k => this.getValue(k, true));
+    keys.forEach((k) => this.getValue(k, true));
     return this;
   }
 
-  public getTypeOrmConfig(): TypeOrmModuleOptions { 
+  public getTypeOrmConfig(): TypeOrmModuleOptions {
     return {
-      type: 'mysql', 
+      type: 'mysql',
 
-      host: this.getValue('TUTORIAL_HOST'), 
+      host: this.getValue('TUTORIAL_HOST'),
       port: parseInt(this.getValue('TUTORIAL_PORT')),
       username: this.getValue('TUTORIAL_USER'),
       password: this.getValue('TUTORIAL_PASSWORD'),
       database: this.getValue('TUTORIAL_DATABASE'),
 
-      entities: ['dist/**/*.entity.js'], 
-      synchronize: true, 
+      entities: ['dist/**/*.entity.js'],
+      synchronize: true,
     };
   }
 }

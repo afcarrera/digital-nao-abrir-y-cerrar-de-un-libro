@@ -7,19 +7,19 @@ import { JwtHandle } from './utils/jwt-handle';
 import { Auth } from './auth.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 @Module({
-    imports: [
-      JwtModule.registerAsync({
-        useFactory: () => {
-          return {
-            signOptions: { expiresIn: '4h' },
-            secret: process.env.JWT_SECRET,
-          };
-        },
-      }),
-      TypeOrmModule.forFeature([Auth]),
-    ], 
-    controllers: [AuthController],
-    providers: [AuthService, JwtStrategy, JwtHandle],
-    exports: [JwtHandle],
-  })
+  imports: [
+    JwtModule.registerAsync({
+      useFactory: () => {
+        return {
+          signOptions: { expiresIn: '4h' },
+          secret: process.env.JWT_SECRET,
+        };
+      },
+    }),
+    TypeOrmModule.forFeature([Auth]),
+  ],
+  controllers: [AuthController],
+  providers: [AuthService, JwtStrategy, JwtHandle],
+  exports: [JwtHandle],
+})
 export class AuthModule {}

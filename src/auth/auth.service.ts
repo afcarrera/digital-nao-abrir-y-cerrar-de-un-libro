@@ -1,4 +1,4 @@
-import { Injectable, HttpException, HttpStatus, Inject } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { compareHash, generateHash } from './utils/handleBcrypt';
 import { LoginAuthDto } from './dto/login-auth.dto';
@@ -9,12 +9,12 @@ import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class AuthService {
-    constructor(
-      private readonly jwtService: JwtService,
-      @InjectRepository(Auth) private authRepository: Repository<Auth>,
-    ) {}
+  constructor(
+    private readonly jwtService: JwtService,
+    @InjectRepository(Auth) private authRepository: Repository<Auth>,
+  ) {}
 
-    /**
+  /**
    * Iniciar sesion
    * @param userLoginBody
    * @returns
@@ -22,9 +22,11 @@ export class AuthService {
   public async login(userLoginBody: LoginAuthDto) {
     const { password } = userLoginBody;
 
-    const userExist = await this.authRepository.findOne({ where: {
-      email: userLoginBody.email,
-    }});
+    const userExist = await this.authRepository.findOne({
+      where: {
+        email: userLoginBody.email,
+      },
+    });
     if (!userExist) throw new HttpException('NOT_FOUND', HttpStatus.NOT_FOUND);
 
     const isCheck = await compareHash(password, userExist.password);
