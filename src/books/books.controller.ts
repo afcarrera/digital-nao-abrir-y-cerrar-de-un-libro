@@ -14,8 +14,9 @@ import { Request } from 'express';
 import { BookDto } from './book.dto';
 import { Book } from './book.entity';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('books')
 @Controller('books')
 @UseGuards(AuthGuard('jwt'))
 export class BooksController {
