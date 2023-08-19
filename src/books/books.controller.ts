@@ -8,6 +8,7 @@ import {
   Delete,
   Put,
   UseGuards,
+  HttpCode,
 } from '@nestjs/common';
 import { BooksService } from './books.service';
 import { Request } from 'express';
@@ -29,6 +30,7 @@ export class BooksController {
    * @param {Request} request Lista de parámetros para filtrar
    */
   @Post('filter')
+  @HttpCode(200)
   @ApiOperation({ summary: 'Obtener lista de libros' })
   @ApiResponse({
     status: 200,
