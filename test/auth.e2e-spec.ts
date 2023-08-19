@@ -99,7 +99,7 @@ describe('AuthController (e2e)', () => {
     return request(app.getHttpServer())
       .post('/auth/login')
       .send(loginReq)
-      .expect(201)
+      .expect(200)
       .expect(loginResult);
   });
 

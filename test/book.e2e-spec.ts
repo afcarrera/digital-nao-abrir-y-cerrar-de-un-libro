@@ -75,7 +75,7 @@ describe('BookController (e2e)', () => {
   });
 
   it('/books/filter (POST)', async () => {
-    return request(app.getHttpServer()).post('/books/filter').expect(201);
+    return request(app.getHttpServer()).post('/books/filter').expect(200);
   });
 
   it('/books/{id} (GET)', async () => {

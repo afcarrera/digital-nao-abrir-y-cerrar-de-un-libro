@@ -2,7 +2,6 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { BooksController } from './books.controller';
 import { BooksService } from './books.service';
 import { ModuleMocker, MockFunctionMetadata } from 'jest-mock';
-import { Request } from 'express';
 
 const moduleMocker = new ModuleMocker(global);
 const results = [
@@ -71,8 +70,7 @@ describe('BooksController', () => {
 
   describe('findAll', () => {
     it('should return an array of books', async () => {
-      const mockRequest = { body: result } as Request;
-      expect(await controller.findAll(mockRequest)).toBe(results);
+      expect(await controller.findAll(result)).toBe(results);
     });
   });
 

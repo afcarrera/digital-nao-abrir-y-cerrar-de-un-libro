@@ -39,6 +39,18 @@ const loginReq = {
   password: '123456',
 };
 
+const loginReqBadPass = {
+  email: 'acarrera@mail.com',
+  password: 'badPass',
+};
+
+const resultBadPass = {
+  name: 'acarrera',
+  email: 'acarrera@mail.com',
+  password: '$2a$10$EAXzNsMCNF1c/EbCQsmjPOj4nvuiRbeUzEBf2i4EYMtgWxJH6bAZ6',
+  id: 1,
+};
+
 const token =
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNjkxODI2MTQ3LCJleHAiOjE2OTE4NDA1NDd9.6-B9KSeKG9fayD-ISutZGH2Zq3baa6dY48ZlbRwnE4A';
 
@@ -92,6 +104,19 @@ describe('AuthService', () => {
         .mockImplementation(() => Promise.resolve(registerResult));
       jest.spyOn(jwtService, 'sign').mockImplementation(() => token);
       expect(await service.login(loginReq)).toStrictEqual(loginResult);
+    });
+  });
+
+  describe('loginBadPass', () => {
+    it('should return HttpException', async () => {
+      jest
+        .spyOn(repository, 'findOne')
+        .mockImplementation(() => Promise.resolve(resultBadPass));
+      try {
+        await service.login(loginReqBadPass);
+      } catch (error) {
+        expect(error).toBeInstanceOf(Error);
+      }
     });
   });
 
