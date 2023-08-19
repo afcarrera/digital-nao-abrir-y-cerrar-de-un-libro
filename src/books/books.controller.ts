@@ -37,8 +37,7 @@ export class BooksController {
     description: 'Lista de libros',
     type: [Book],
   })
-  findAll(@Req() request: Request): Promise<Book[]> {
-    const filter: Book = request.body;
+  findAll(@Body() filter: Book): Promise<Book[]> {
     return this.booksService.findAll(filter);
   }
 
