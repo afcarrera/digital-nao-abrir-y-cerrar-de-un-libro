@@ -2,7 +2,6 @@ import {
   Controller,
   Get,
   Param,
-  Req,
   Post,
   Body,
   Delete,
@@ -11,11 +10,15 @@ import {
   HttpCode,
 } from '@nestjs/common';
 import { BooksService } from './books.service';
-import { Request } from 'express';
 import { BookDto } from './book.dto';
 import { Book } from './book.entity';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 
 @ApiTags('books')
 @Controller('books')

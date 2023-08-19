@@ -22,6 +22,6 @@ async function bootstrap() {
   // La ruta en que se sirve la documentación
   SwaggerModule.setup('docs', app, document);
   app.useGlobalPipes(new ValidationPipe());
-  await app.listen(port, "0.0.0.0");
+  await app.listen(port, '0.0.0.0');
 }
 bootstrap();
