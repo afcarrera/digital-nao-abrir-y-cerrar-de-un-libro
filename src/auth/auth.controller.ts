@@ -4,6 +4,7 @@ import { RegisterAuthDto } from './dto/register-auth.dto';
 import { LoginAuthDto } from './dto/login-auth.dto';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Auth } from './auth.entity';
+import { AuthToken } from './authToken.class';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -37,7 +38,7 @@ export class AuthController {
   @ApiResponse({
     status: 200,
     description: 'Iniciar sesión',
-    type: Auth,
+    type: AuthToken,
   })
   handleLogin(@Body() loginBody: LoginAuthDto) {
     return this.authService.login(loginBody);
