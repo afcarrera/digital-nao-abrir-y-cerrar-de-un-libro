@@ -4,6 +4,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
+  const port = process.env.PORT || 3000;
   const app = await NestFactory.create(AppModule);
   app.setGlobalPrefix('bookstore/api/v1');
 
@@ -21,6 +22,6 @@ async function bootstrap() {
   // La ruta en que se sirve la documentación
   SwaggerModule.setup('docs', app, document);
   app.useGlobalPipes(new ValidationPipe());
-  await app.listen(3000);
+  await app.listen(port, "0.0.0.0");
 }
 bootstrap();
